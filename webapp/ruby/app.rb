@@ -361,13 +361,11 @@ module Isutrain
             cast: false,
           ).first
 
-          if departure.nil?
-            puts "departure nil!!!!!!!! #{date.strftime('%Y/%m/%d')}"
+          unless departure.nil?
+            departure_date = Time.parse("#{date.strftime('%Y/%m/%d')} #{departure[:departure]} +09:00 JST")
+
+            next unless date < departure_date
           end
-
-          departure_date = Time.parse("#{date.strftime('%Y/%m/%d')} #{departure[:departure]} +09:00 JST")
-
-          next unless date < departure_date
 
           arrival = db.xquery(
             'SELECT `arrival` FROM `train_timetable_master` WHERE date = ? AND `train_class` = ? AND `train_name` = ? AND `station` = ?',
