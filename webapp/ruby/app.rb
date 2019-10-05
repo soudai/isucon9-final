@@ -804,11 +804,12 @@ __EOF
             end
 
             body_params[:seats] = [] # 座席リクエスト情報は空に
-            #(1..16).each do |carnum|
+            (1..16).each do |carnum|
               seat_list = begin
                 db.xquery(
-                  'SELECT * FROM `seat_master` WHERE `train_class` = ? AND `seat_class` = ? AND `is_smoking_seat` = ? ORDER BY `seat_row`, `seat_column`',
+                  'SELECT * FROM `seat_master` WHERE `train_class` = ? AND `car_number` = ? AND `seat_class` = ? AND `is_smoking_seat` = ? ORDER BY `seat_row`, `seat_column`',
                   body_params[:train_class],
+                  carnum,
                   body_params[:seat_class],
                   !!body_params[:is_smoking_seat],
                 )
@@ -980,7 +981,7 @@ __EOF
 
                 break
               end
-            #end
+            end
 
             if body_params[:seats].length.zero?
               db.query('ROLLBACK')
