@@ -28,15 +28,13 @@ module Isutrain
       usable.values
     end
 
-    def get_available_seats(train, from_station, to_station, seat_class, is_smoking_seat)
+    def get_available_seats(train, from_station, to_station)
       # 指定種別の空き座席を返す
 
       # 全ての座席を取得する
       seat_list = db.xquery(
-        'SELECT * FROM `seat_master` WHERE `train_class` = ? AND `seat_class` = ? AND `is_smoking_seat` = ?',
-        train[:train_class],
-        seat_class,
-        is_smoking_seat,
+        'SELECT * FROM `seat_master` WHERE `train_class` = ?',
+        train[:train_class]
       )
 
       available_seat_map = {}
