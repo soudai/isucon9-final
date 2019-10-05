@@ -1536,7 +1536,10 @@ __EOF
         )
       rescue Mysql2::Error => e
         cnt += 1
-        retry if cnt < max
+        if cnt < max
+          sleep 0.1
+          retry
+        end
         db.query('ROLLBACK')
         puts e.message
         puts 'cancel error!!!!!!!!! 5'
@@ -1550,7 +1553,10 @@ __EOF
         )
       rescue Mysql2::Error => e
         cnt += 1
-        retry if cnt < max
+        if cnt < max
+          sleep 0.1
+          retry
+        end
         db.query('ROLLBACK')
         puts e.message
         puts 'cancel error!!!!!!!!! 6'
