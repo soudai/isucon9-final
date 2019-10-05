@@ -533,8 +533,10 @@ module Isutrain
           SELECT
             `s`.*
           FROM
-            `seat_reservations` `s`,
+            `seat_reservations` `s`
+          JOIN
             `reservations` `r`
+          USING (`reservation_id`)
           WHERE
             `r`.`date` = ? AND
             `r`.`train_class` = ? AND
