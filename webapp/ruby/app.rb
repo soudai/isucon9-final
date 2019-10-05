@@ -1460,7 +1460,7 @@ __EOF
         halt_with_error 400, 'incorrect item id'
       end
 
-      db.query('BEGIN')
+      #db.query('BEGIN')
 
       reservation = begin
         db.xquery(
@@ -1469,7 +1469,7 @@ __EOF
           user[:id],
         ).first
       rescue Mysql2::Error => e
-        db.query('ROLLBACK')
+        #db.query('ROLLBACK')
         puts e.message
         puts 'cancel error!!!!!!!!! 1'
         halt_with_error 500, '予約情報の検索に失敗しました'
@@ -1482,7 +1482,7 @@ __EOF
 
       case reservation[:status]
       when 'rejected'
-        db.query('ROLLBACK')
+        #db.query('ROLLBACK')
         puts 'cancel error!!!!!!!!! 2'
         halt_with_error 500, '何らかの理由により予約はRejected状態です'
       when 'done'
@@ -1502,7 +1502,7 @@ __EOF
 
         # リクエスト失敗
         if res.code != '200'
-          db.query('ROLLBACK')
+          #db.query('ROLLBACK')
           puts res.code
           puts 'cancel error!!!!!!!!! 3'
           halt_with_error 500, '決済に失敗しました。支払いIDが間違っている可能性があります'
@@ -1512,7 +1512,7 @@ __EOF
         output = begin
           JSON.parse(res.body, symbolize_names: true)
         rescue JSON::ParserError => e
-          db.query('ROLLBACK')
+          #db.query('ROLLBACK')
           puts e.message
           puts 'cancel error!!!!!!!!! 4'
           halt_with_error 500, 'JSON parseに失敗しました'
@@ -1523,6 +1523,11 @@ __EOF
         # pass
       end
 
+      db.query('BEGIN')
+
+      max = 10
+      cnt = 0
+
       begin
         db.xquery(
           'DELETE FROM `reservations` WHERE `reservation_id` = ? AND `user_id` = ?',
@@ -1530,6 +1535,8 @@ __EOF
           user[:id],
         )
       rescue Mysql2::Error => e
+        cnt += 1
+        retry if cnt < max
         db.query('ROLLBACK')
         puts e.message
         puts 'cancel error!!!!!!!!! 5'
@@ -1542,6 +1549,8 @@ __EOF
           item_id,
         )
       rescue Mysql2::Error => e
+        cnt += 1
+        retry if cnt < max
         db.query('ROLLBACK')
         puts e.message
         puts 'cancel error!!!!!!!!! 6'
