@@ -458,7 +458,8 @@ module Isutrain
             arrival: to_station[:name],
             # departure_time: departure[:departure],
             departure_time: departure.nil? ? nil : departure[:departure],
-            arrival_time: arrival[:arrival],
+            # arrival_time: arrival[:arrival],
+            arrival_time: arrival.nil? ? nil : arrival[:arrival],
             seat_availability: seat_availability,
             seat_fare: fare_information,
           }
