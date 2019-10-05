@@ -283,14 +283,14 @@ module Isutrain
 
       train_list = if params[:train_class].nil? || params[:train_class].empty?
         db.xquery(
-          'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` IN (?) AND `is_nobori` = ?',
+          'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` IN (?) AND `is_nobori` = ? ORDER BY `departure_at`',
           date.strftime('%Y/%m/%d'),
           usable_train_class_list,
           is_nobori,
         )
       else
         db.xquery(
-          'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` IN (?) AND `is_nobori` = ? AND `train_class` = ?',
+          'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` IN (?) AND `is_nobori` = ? AND `train_class` = ? ORDER BY `departure_at`',
           date.strftime('%Y/%m/%d'),
           usable_train_class_list,
           is_nobori,
@@ -463,7 +463,7 @@ module Isutrain
       halt_with_error 404, '予約可能期間外です' unless check_available_date(date)
 
       train = db.xquery(
-        'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ?',
+        'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ? ORDER BY `departure_at`',
         date.strftime('%Y/%m/%d'),
         params[:train_class],
         params[:train_name],
@@ -630,7 +630,7 @@ __EOF
       begin
         tmas = begin
           db.xquery(
-            'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ?',
+            'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ? ORDER BY `departure_at`',
             date.strftime('%Y/%m/%d'),
             body_params[:train_class],
             body_params[:train_name],
@@ -766,7 +766,7 @@ __EOF
           if body_params[:seat_class] != 'non-reserved'
             train = begin
               db.xquery(
-                'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ?',
+                'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ? ORDER BY `departure_at`',
                 date.strftime('%Y/%m/%d'),
                 body_params[:train_class],
                 body_params[:train_name],
@@ -1021,7 +1021,7 @@ __EOF
           # train_masterから列車情報を取得(上り・下りが分かる)
           tmas = begin
             db.xquery(
-              'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ?',
+              'SELECT * FROM `train_master` WHERE `date` = ? AND `train_class` = ? AND `train_name` = ? ORDER BY `departure_at`',
               date.strftime('%Y/%m/%d'),
               body_params[:train_class],
               body_params[:train_name],
