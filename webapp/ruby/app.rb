@@ -531,7 +531,7 @@ module Isutrain
 
         query = <<__EOF
           SELECT
-            `s`.*
+            `s`.*, `r`.`departure`, `r`.`arrival`
           FROM
             `seat_reservations` `s`,
             `reservations` `r`
@@ -557,19 +557,14 @@ __EOF
         p seat_reservation_list
 
         seat_reservation_list.each do |seat_reservation|
-          reservation = db.xquery(
-            'SELECT * FROM `reservations` WHERE `reservation_id` = ?',
-            seat_reservation[:reservation_id],
-          ).first
-
           departure_station = db.xquery(
             'SELECT * FROM `station_master` WHERE `name` = ?',
-            reservation[:departure],
+            seat_reservation[:departure],
           ).first
 
           arrival_station = db.xquery(
             'SELECT * FROM `station_master` WHERE `name` = ?',
-            reservation[:arrival],
+            seat_reservation[:arrival],
           ).first
 
           if train[:is_nobori]
