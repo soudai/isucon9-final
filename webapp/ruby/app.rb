@@ -1469,6 +1469,7 @@ __EOF
       rescue Mysql2::Error => e
         db.query('ROLLBACK')
         puts e.message
+        puts 'cancel error!!!!!!!!! 1'
         halt_with_error 500, '予約情報の検索に失敗しました'
       end
 
@@ -1480,6 +1481,7 @@ __EOF
       case reservation[:status]
       when 'rejected'
         db.query('ROLLBACK')
+        puts 'cancel error!!!!!!!!! 2'
         halt_with_error 500, '何らかの理由により予約はRejected状態です'
       when 'done'
         # 支払いをキャンセルする
@@ -1500,6 +1502,7 @@ __EOF
         if res.code != '200'
           db.query('ROLLBACK')
           puts res.code
+          puts 'cancel error!!!!!!!!! 3'
           halt_with_error 500, '決済に失敗しました。支払いIDが間違っている可能性があります'
         end
 
@@ -1509,6 +1512,7 @@ __EOF
         rescue JSON::ParserError => e
           db.query('ROLLBACK')
           puts e.message
+          puts 'cancel error!!!!!!!!! 4'
           halt_with_error 500, 'JSON parseに失敗しました'
         end
 
@@ -1526,6 +1530,7 @@ __EOF
       rescue Mysql2::Error => e
         db.query('ROLLBACK')
         puts e.message
+        puts 'cancel error!!!!!!!!! 5'
         halt_with_error 500, e.message
       end
 
@@ -1537,6 +1542,7 @@ __EOF
       rescue Mysql2::Error => e
         db.query('ROLLBACK')
         puts e.message
+        puts 'cancel error!!!!!!!!! 6'
         halt_with_error 500, e.message
       end
 
