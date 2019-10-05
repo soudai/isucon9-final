@@ -68,7 +68,7 @@ module Isutrain
         last_fare = 0
 
         distance_fare_list.each do |distance_fare|
-          puts "#{orig_to_dest_distance} #{distance_fare[:distance]} #{distance_fare[:fare]}"
+          #puts "#{orig_to_dest_distance} #{distance_fare[:distance]} #{distance_fare[:fare]}"
 
           break if last_distance < orig_to_dest_distance && orig_to_dest_distance < distance_fare[:distance]
 
@@ -97,10 +97,10 @@ module Isutrain
 
         raise ErrorNoRows if to_station.nil?
 
-        puts "distance #{(to_station[:distance] - from_station[:distance]).abs}"
+        #puts "distance #{(to_station[:distance] - from_station[:distance]).abs}"
 
         dist_fare = get_distance_fare((to_station[:distance] - from_station[:distance]).abs)
-        puts "distFare #{dist_fare}"
+        #puts "distFare #{dist_fare}"
 
         # 期間・車両・座席クラス倍率
         fare_list = db.xquery(
@@ -118,12 +118,12 @@ module Isutrain
           start_date = Date.new(fare[:start_date].year, fare[:start_date].month, fare[:start_date].day)
 
           if start_date <= date
-            puts "#{fare[:start_date]} #{fare[:fare_multiplier]}"
+            #puts "#{fare[:start_date]} #{fare[:fare_multiplier]}"
             selected_fare = fare
           end
         end
 
-        puts '%%%%%%%%%%%%%%%%%%%'
+        #puts '%%%%%%%%%%%%%%%%%%%'
 
         (dist_fare * selected_fare[:fare_multiplier]).floor
       end
@@ -263,7 +263,7 @@ module Isutrain
       ).first
 
       if from_station.nil?
-        puts 'fromStation: no rows'
+        #puts 'fromStation: no rows'
         halt_with_error 400, 'fromStation: no rows'
       end
 
@@ -273,7 +273,7 @@ module Isutrain
       ).first
 
       if to_station.nil?
-        puts 'toStation: no rows'
+        #puts 'toStation: no rows'
         halt_with_error 400, 'toStation: no rows'
       end
 
@@ -302,8 +302,8 @@ module Isutrain
         "SELECT * FROM `station_master` ORDER BY `distance` #{is_nobori ? 'DESC' : 'ASC'}",
       )
 
-      puts "From #{from_station}"
-      puts "To #{to_station}"
+      #puts "From #{from_station}"
+      #puts "To #{to_station}"
 
       train_search_response_list = []
 
@@ -335,7 +335,7 @@ module Isutrain
               is_contains_dest_station = true
             else
               # 出発駅より先に終点が見つかったとき
-              puts 'なんかおかしい'
+              #puts 'なんかおかしい'
             end
 
             break
@@ -494,7 +494,7 @@ module Isutrain
       ).first
 
       if from_station.nil?
-        puts 'fromStation: no rows'
+        #puts 'fromStation: no rows'
         halt_with_error 400, 'fromStation: no rows'
       end
 
@@ -505,13 +505,13 @@ module Isutrain
       ).first
 
       if to_station.nil?
-        puts 'toStation: no rows'
+        #puts 'toStation: no rows'
         halt_with_error 400, 'toStation: no rows'
       end
 
       usable_train_class_list = get_usable_train_class_list(from_station, to_station)
       unless usable_train_class_list.include?(train[:train_class])
-        puts 'invalid train_class'
+        #puts 'invalid train_class'
         halt_with_error 400, 'invalid train_class'
       end
 
@@ -559,7 +559,7 @@ __EOF
           seat[:seat_column],
         )
 
-        p seat_reservation_list
+        #p seat_reservation_list
 
         seat_reservation_list.each do |seat_reservation|
           departure_station = db.xquery(
@@ -593,7 +593,7 @@ __EOF
           end
         end
 
-        puts s[:is_occupied] ? 'true' : 'false'
+        #puts s[:is_occupied] ? 'true' : 'false'
 
         seat_information_list << s
       end
@@ -650,7 +650,7 @@ __EOF
           ).first
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, '列車データの取得に失敗しました'
         end
 
@@ -659,7 +659,7 @@ __EOF
           halt_with_error 404, '列車データがみつかりません'
         end
 
-        puts tmas
+        #puts tmas
 
         # 列車自体の駅IDを求める
         departure_station = begin
@@ -669,7 +669,7 @@ __EOF
           ).first
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, 'リクエストされた列車の始発駅データの取得に失敗しました'
         end
 
@@ -686,7 +686,7 @@ __EOF
           ).first
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, 'リクエストされた列車の終着駅データの取得に失敗しました'
         end
 
@@ -703,7 +703,7 @@ __EOF
           ).first
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, '乗車駅データの取得に失敗しました'
         end
 
@@ -720,7 +720,7 @@ __EOF
           ).first
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, '降車駅駅データの取得に失敗しました'
         end
 
@@ -786,7 +786,7 @@ __EOF
               ).first
             rescue Mysql2::Error => e
               db.query('ROLLBACK')
-              puts e.message
+              #puts e.message
               halt_with_error 400, e.message
             end
 
@@ -798,7 +798,7 @@ __EOF
             usable_train_class_list = get_usable_train_class_list(from_station, to_station)
             unless usable_train_class_list.include?(train[:train_class])
               err = 'invalid train_class'
-              puts err
+              #puts err
               db.query('ROLLBACK')
               halt_with_error 400, err
             end
@@ -815,7 +815,7 @@ __EOF
                 )
               rescue Mysql2::Error => e
                 db.query('ROLLBACK')
-                puts e.message
+                #puts e.message
                 halt_with_error 400, e.message
               end
 
@@ -841,7 +841,7 @@ __EOF
                   )
                 rescue Mysql2::Error => e
                   db.query('ROLLBACK')
-                  puts e.message
+                  #puts e.message
                   halt_with_error 400, e.message
                 end
 
@@ -853,7 +853,7 @@ __EOF
                     ).first
                   rescue Mysql2::Error => e
                     db.query('ROLLBACK')
-                    puts e.message
+                    #puts e.message
                     halt_with_error 400, e.message
                   end
 
@@ -869,7 +869,7 @@ __EOF
                     ).first
                   rescue Mysql2::Error => e
                     db.query('ROLLBACK')
-                    puts e.message
+                    #puts e.message
                     halt_with_error 400, e.message
                   end
 
@@ -885,7 +885,7 @@ __EOF
                     ).first
                   rescue Mysql2::Error => e
                     db.query('ROLLBACK')
-                    puts e.message
+                    #puts e.message
                     halt_with_error 400, e.message
                   end
 
@@ -960,21 +960,21 @@ __EOF
               if body_params[:seats].length < body_params[:adult] + body_params[:child]
                 # リクエストに対して席数が足りてない
                 # 次の号車にうつしたい
-                puts '-----------------'
-                puts "現在検索中の車両: #{carnum}号車, リクエスト座席数: #{body_params[:adult] + body_params[:child]}, 予約できそうな座席数: #{body_params[:seats].length}, 不足数: #{body_params[:adult] + body_params[:child] - body_params[:seats].length}"
-                puts 'リクエストに対して座席数が不足しているため、次の車両を検索します。'
+                #puts '-----------------'
+                #puts "現在検索中の車両: #{carnum}号車, リクエスト座席数: #{body_params[:adult] + body_params[:child]}, 予約できそうな座席数: #{body_params[:seats].length}, 不足数: #{body_params[:adult] + body_params[:child] - body_params[:seats].length}"
+                #puts 'リクエストに対して座席数が不足しているため、次の車両を検索します。'
 
                 body_params[:seats] = []
                 if carnum == 16
-                  puts 'この新幹線にまとめて予約できる席数がなかったから検索をやめるよ'
+                  #puts 'この新幹線にまとめて予約できる席数がなかったから検索をやめるよ'
                   break
                 end
               end
 
-              puts "空き実績: #{carnum}号車 シート: #{body_params[:seats]} 席数: #{body_params[:seats].length}"
+              #puts "空き実績: #{carnum}号車 シート: #{body_params[:seats]} 席数: #{body_params[:seats].length}"
 
               if body_params[:seats].length >= body_params[:adult] + body_params[:child]
-                puts '予約情報に追加したよ'
+                #puts '予約情報に追加したよ'
 
                 body_params[:seats] = body_params[:seats][0, body_params[:adult] + body_params[:child]]
                 body_params[:car_number] = carnum
@@ -991,7 +991,7 @@ __EOF
         else
           # 座席情報のValidate
           body_params[:seats].each do |z|
-            puts "XXXX #{z}"
+            #puts "XXXX #{z}"
 
             seat_list = begin
               db.xquery(
@@ -1003,7 +1003,7 @@ __EOF
                 body_params[:seat_class],
               )
             rescue Mysql2::Error => e
-              puts e.message
+              #puts e.message
               db.query('ROLLBACK')
               halt_with_error 400, e.message
             end
@@ -1023,7 +1023,7 @@ __EOF
             body_params[:train_name],
           )
         rescue Mysql2::Error => e
-          puts e.message
+          #puts e.message
           db.query('ROLLBACK')
           halt_with_error 500, '列車予約情報の取得に失敗しました'
         end
@@ -1040,7 +1040,7 @@ __EOF
               body_params[:train_name],
             ).first
           rescue Mysql2::Error => e
-            puts e.message
+            #puts e.message
             db.query('ROLLBACK')
             halt_with_error 500, '列車データの取得に失敗しました'
           end
@@ -1059,7 +1059,7 @@ __EOF
               reservation[:departure],
             ).first
           rescue Mysql2::Error => e
-            puts e.message
+            #puts e.message
             db.query('ROLLBACK')
             halt_with_error 500, '予約情報に記載された列車の乗車駅データの取得に失敗しました'
           end
@@ -1076,7 +1076,7 @@ __EOF
               reservation[:arrival],
             ).first
           rescue Mysql2::Error => e
-            puts e.message
+            #puts e.message
             db.query('ROLLBACK')
             halt_with_error 500, '予約情報に記載された列車の降車駅データの取得に失敗しました'
           end
@@ -1116,7 +1116,7 @@ __EOF
                 reservation[:reservation_id],
               )
             rescue Mysql2::Error => e
-              puts e.message
+              #puts e.message
               db.query('ROLLBACK')
               halt_with_error 500, '座席予約情報の取得に失敗しました'
             end
@@ -1125,7 +1125,7 @@ __EOF
               body_params[:seats].each do |seat|
                 if v[:car_number] == body_params[:car_number] && v[:seat_row] == seat[:row] && v[:seat_column] == seat[:column]
                   db.query('ROLLBACK')
-                  puts "Duplicated #{reservation}"
+                  #puts "Duplicated #{reservation}"
                   halt_with_error 400, 'リクエストに既に予約された席が含まれています'
                 end
               end
@@ -1158,19 +1158,19 @@ __EOF
           end
         rescue Error, ErrorNoRows => e
           db.query('ROLLBACK')
-          puts "fareCalc #{e.message}"
+          #puts "fareCalc #{e.message}"
           halt_with_error 400, e.message
         end
 
         sum_fare = (body_params[:adult] * fare) + (body_params[:child] * fare) / 2
-        puts 'SUMFARE'
+        #puts 'SUMFARE'
 
         # userID取得。ログインしてないと怒られる。
         user, status, message = get_user
 
         if status != 200
           db.query('ROLLBACK')
-          puts message
+          #puts message
           halt_with_error status, message
         end
 
@@ -1192,7 +1192,7 @@ __EOF
           )
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 400, "予約の保存に失敗しました。 #{e.message}"
         end
 
@@ -1214,11 +1214,11 @@ __EOF
           )
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, '座席予約の登録に失敗しました'
         end
       rescue => e
-        puts e.message
+        #puts e.message
         db.query('ROLLBACK')
         halt_with_error 500, e.message
       end
@@ -1247,7 +1247,7 @@ __EOF
           ).first
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, '予約情報の取得に失敗しました'
         end
 
@@ -1261,7 +1261,7 @@ __EOF
 
         if status != 200
           db.query('ROLLBACK')
-          puts message
+          #puts message
           halt_with_error status, message
         end
 
@@ -1299,7 +1299,7 @@ __EOF
         # リクエスト失敗
         if res.code != '200'
           db.query('ROLLBACK')
-          puts res.code
+          #puts res.code
           halt_with_error 500, '決済に失敗しました。カードトークンや支払いIDが間違っている可能性があります'
         end
 
@@ -1308,7 +1308,7 @@ __EOF
           JSON.parse(res.body, symbolize_names: true)
         rescue JSON::ParserError => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, 'JSON parseに失敗しました'
         end
 
@@ -1322,11 +1322,11 @@ __EOF
           )
         rescue Mysql2::Error => e
           db.query('ROLLBACK')
-          puts e.message
+          #puts e.message
           halt_with_error 500, '予約情報の更新に失敗しました'
         end
       rescue => e
-        puts e.message
+        #puts e.message
         db.query('ROLLBACK')
         halt_with_error 500, e.message
       end
@@ -1345,7 +1345,7 @@ __EOF
       user, status, message = get_user
 
       if status != 200
-        puts message
+        #puts message
         halt_with_error status, message
       end
 
@@ -1372,7 +1372,7 @@ __EOF
 
       message_response('registration complete')
     rescue Mysql2::Error => e
-      puts e.message
+      #puts e.message
       halt_with_error 502, 'user registration failed'
     end
 
@@ -1473,8 +1473,8 @@ __EOF
         ).first
       rescue Mysql2::Error => e
         #db.query('ROLLBACK')
-        puts e.message
-        puts 'cancel error!!!!!!!!! 1'
+        #puts e.message
+        #puts 'cancel error!!!!!!!!! 1'
         halt_with_error 500, '予約情報の検索に失敗しました'
       end
 
@@ -1486,7 +1486,7 @@ __EOF
       case reservation[:status]
       when 'rejected'
         #db.query('ROLLBACK')
-        puts 'cancel error!!!!!!!!! 2'
+        #puts 'cancel error!!!!!!!!! 2'
         halt_with_error 500, '何らかの理由により予約はRejected状態です'
       when 'done'
         # 支払いをキャンセルする
@@ -1506,8 +1506,8 @@ __EOF
         # リクエスト失敗
         if res.code != '200'
           #db.query('ROLLBACK')
-          puts res.code
-          puts 'cancel error!!!!!!!!! 3'
+          #puts res.code
+          #puts 'cancel error!!!!!!!!! 3'
           halt_with_error 500, '決済に失敗しました。支払いIDが間違っている可能性があります'
         end
 
@@ -1516,12 +1516,12 @@ __EOF
           JSON.parse(res.body, symbolize_names: true)
         rescue JSON::ParserError => e
           #db.query('ROLLBACK')
-          puts e.message
-          puts 'cancel error!!!!!!!!! 4'
+          #puts e.message
+          #puts 'cancel error!!!!!!!!! 4'
           halt_with_error 500, 'JSON parseに失敗しました'
         end
 
-        puts output
+        #puts output
       else
         # pass
       end
@@ -1544,8 +1544,8 @@ __EOF
           retry
         end
         db.query('ROLLBACK')
-        puts e.message
-        puts 'cancel error!!!!!!!!! 5'
+        #puts e.message
+        #puts 'cancel error!!!!!!!!! 5'
         halt_with_error 500, e.message
       end
 
@@ -1561,8 +1561,8 @@ __EOF
           retry
         end
         db.query('ROLLBACK')
-        puts e.message
-        puts 'cancel error!!!!!!!!! 6'
+        #puts e.message
+        #puts 'cancel error!!!!!!!!! 6'
         halt_with_error 500, e.message
       end
 
