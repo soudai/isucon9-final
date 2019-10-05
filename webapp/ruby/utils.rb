@@ -5,7 +5,7 @@ module Isutrain
       semi_express: '中間',
       local: '遅いやつ',
     }
-    AVAILABLE_DAYS = 150
+    AVAILABLE_DAYS = 120
 
     def check_available_date(date)
       t = Time.new(2020, 1, 1, 0, 0, 0, '+09:00')
