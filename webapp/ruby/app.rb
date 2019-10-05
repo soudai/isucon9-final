@@ -361,6 +361,8 @@ module Isutrain
             cast: false,
           ).first
 
+          next if departure.nil?
+
           unless departure.nil?
             departure_date = Time.parse("#{date.strftime('%Y/%m/%d')} #{departure[:departure]} +09:00 JST")
 
@@ -456,8 +458,7 @@ module Isutrain
             last: train[:last_station],
             departure: from_station[:name],
             arrival: to_station[:name],
-            # departure_time: departure[:departure],
-            departure_time: departure.nil? ? nil : departure[:departure],
+            departure_time: departure[:departure],
             arrival_time: arrival[:arrival],
             seat_availability: seat_availability,
             seat_fare: fare_information,
