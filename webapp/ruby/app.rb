@@ -361,6 +361,8 @@ module Isutrain
             cast: false,
           ).first
 
+          next if departure.nil?
+
           departure_date = Time.parse("#{date.strftime('%Y/%m/%d')} #{departure[:departure]} +09:00 JST")
 
           next unless date < departure_date
