@@ -361,6 +361,10 @@ module Isutrain
             cast: false,
           ).first
 
+          if departure.nil?
+            puts "departure nil!!!!!!!! #{date.strftime('%Y/%m/%d')}"
+          end
+
           departure_date = Time.parse("#{date.strftime('%Y/%m/%d')} #{departure[:departure]} +09:00 JST")
 
           next unless date < departure_date
