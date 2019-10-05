@@ -5,3 +5,4 @@ ALTER TABLE `station_master` ADD KEY (`name`);
 ALTER TABLE `fare_master` ADD KEY (`train_class`,`seat_class`,`start_date`);
 ALTER TABLE `distance_fare_master` ADD KEY (`distance`);
 ALTER TABLE `seat_reservations` ADD KEY (`reservation_id`);
+ALTER TABLE `reservations` ADD KEY (`date`,`train_class`,`train_name`);
