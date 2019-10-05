@@ -379,7 +379,7 @@ module Isutrain
           reserved_avail_seats = 0
           reserved_smoke_avail_seats = 0
 
-          all_available_seats = get_available_seats(train, from_station, to_station).each do |seat|
+          get_available_seats(train, from_station, to_station).each do |seat|
             case
             when seat[:seat_class] == "premium" && !seat[:is_smoking_seat]
               premium_avail_seats += 1
@@ -828,7 +828,7 @@ __EOF
 
                 seat_reservation_list = begin
                   db.xquery(
-                    'SELECT `s`.* FROM `seat_reservations` `s`, `reservations` `r` WHERE `r`.`date` = ? AND `r`.`train_class` = ? AND `r`.`train_name` = ? AND `car_number` = ? AND `seat_row` = ? AND `seat_column` = ? FOR UPDATE',
+                    'SELECT `s`.* FROM `seat_reservations` `s` JOIN `reservations` `r` USING (`reservation_id`) WHERE `r`.`date` = ? AND `r`.`train_class` = ? AND `r`.`train_name` = ? AND `car_number` = ? AND `seat_row` = ? AND `seat_column` = ? FOR UPDATE',
                     date.strftime('%Y/%m/%d'),
                     seat[:train_class],
                     body_params[:train_name],
